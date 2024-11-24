@@ -1,12 +1,13 @@
 using System;
 using System.Threading;
 using System.Web;
+using Microsoft.AspNetCore.Http;
 
 namespace Orchard.WarmupStarter {
     public class Starter<T> where T : class {
-        private readonly Func<HttpApplication, T> _initialization;
-        private readonly Action<HttpApplication, T> _beginRequest;
-        private readonly Action<HttpApplication, T> _endRequest;
+        private readonly Func<Microsoft.AspNetCore.Http.HttpApplication, T> _initialization;
+        private readonly Action<Microsoft.AspNetCore.Http.HttpApplication, T> _beginRequest;
+        private readonly Action<Microsoft.AspNetCore.Http.HttpApplication, T> _endRequest;
         private readonly object _synLock = new object();
         /// <summary>
         /// The result of the initialization queued work item.
@@ -26,17 +27,17 @@ namespace Orchard.WarmupStarter {
         /// </summary>
         private volatile Exception _previousError;
 
-        public Starter(Func<HttpApplication, T> initialization, Action<HttpApplication, T> beginRequest, Action<HttpApplication, T> endRequest) {
+        public Starter(Func<Microsoft.AspNetCore.Http.HttpApplication, T> initialization, Action<Microsoft.AspNetCore.Http.HttpApplication, T> beginRequest, Action<Microsoft.AspNetCore.Http.HttpApplication, T> endRequest) {
             _initialization = initialization;
             _beginRequest = beginRequest;
             _endRequest = endRequest;
             }
 
-        public void OnApplicationStart(System.Web.HttpApplication application) {
+        public void OnApplicationStart(Microsoft.AspNetCore.Http.HttpApplication application) {
             LaunchStartupThread(application);
             }
 
-        public void OnBeginRequest(System.Web.HttpApplication application) {
+        public void OnBeginRequest(Microsoft.AspNetCore.Http.HttpApplication application) {
             // Initialization resulted in an error
             if (_error != null) {
                 // Save error for next requests and restart async initialization.
@@ -69,7 +70,7 @@ namespace Orchard.WarmupStarter {
             }
         }
 
-        public void OnEndRequest(System.Web.HttpApplication application) {
+        public void OnEndRequest(Microsoft.AspNetCore.Http.HttpApplication application) {
             // Only notify if the initialization has successfully completed
             if (_initializationResult != null) {
                 _endRequest(application, _initializationResult);
@@ -79,7 +80,7 @@ namespace Orchard.WarmupStarter {
         /// <summary>
         /// Run the initialization delegate asynchronously in a queued work item
         /// </summary>
-        public void LaunchStartupThread(System.Web.HttpApplication application) {
+        public void LaunchStartupThread(Microsoft.AspNetCore.Http.HttpApplication application) {
             // Make sure incoming requests are queued
             WarmupHttpModule.SignalWarmupStart();
 
