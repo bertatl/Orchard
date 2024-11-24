@@ -1,6 +1,7 @@
 using System;
 using System.Threading;
-using System.Web;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.SystemWebAdapters;
 
 namespace Orchard.WarmupStarter {
     public class Starter<T> where T : class {
