@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Threading;
-using Microsoft.AspNetCore.SystemWebAdapters;
-using HttpApplication = Microsoft.AspNetCore.SystemWebAdapters.HttpApplication;
+using System.Web;
+using HttpApplication = System.Web.HttpApplication;
 
 namespace Orchard.WarmupStarter {
     public class WarmupHttpModule : IHttpModule {
