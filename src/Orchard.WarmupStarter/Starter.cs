@@ -1,6 +1,7 @@
 using System;
 using System.Threading;
 using System.Web;
+using HttpApplication = System.Web.HttpApplication;
 
 namespace Orchard.WarmupStarter {
     public class Starter<T> where T : class {
@@ -30,7 +31,7 @@ namespace Orchard.WarmupStarter {
             _initialization = initialization;
             _beginRequest = beginRequest;
             _endRequest = endRequest;
-            }
+        }
 
         public void OnApplicationStart(System.Web.HttpApplication application) {
             LaunchStartupThread(application);
