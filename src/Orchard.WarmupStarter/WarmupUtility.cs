@@ -1,10 +1,8 @@
-using System;
+﻿using System;
 using System.IO;
 using System.Text;
 using System.Web;
 using System.Web.Hosting;
-using Microsoft.AspNetCore.SystemWebAdapters;
-using HttpApplication = Microsoft.AspNetCore.SystemWebAdapters.HttpApplication;
 
 namespace Orchard.WarmupStarter {
     public static class WarmupUtility {
