@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Web;
@@ -9,6 +9,10 @@ namespace Orchard.WarmupStarter {
         private static object _synLock = new object();
         private static IList<Action> _awaiting = new List<Action>();
 
+        /// <summary>
+        /// Initializes the HTTP module and registers events.
+        /// </summary>
+        /// <param name="context">The HTTP application context.</param>
         public void Init(HttpApplication context) {
             _context = context;
             context.AddOnBeginRequestAsync(BeginBeginRequest, EndBeginRequest, null);
