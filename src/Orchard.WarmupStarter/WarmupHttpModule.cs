@@ -2,11 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Web;
-using HttpApplication = System.Web.HttpApplication;
+using Microsoft.AspNetCore.SystemWebAdapters;
 
 namespace Orchard.WarmupStarter {
     public class WarmupHttpModule : IHttpModule {
-        private HttpApplication _context;
+        private Microsoft.AspNetCore.SystemWebAdapters.HttpApplication _context;
         private static object _synLock = new object();
         private static IList<Action> _awaiting = new List<Action>();
 
