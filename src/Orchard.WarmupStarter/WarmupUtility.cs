@@ -1,8 +1,8 @@
-using System;
+﻿using System;
 using System.IO;
 using System.Text;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Hosting;
+using System.Web;
+using System.Web.Hosting;
 
 namespace Orchard.WarmupStarter {
     public static class WarmupUtility {
@@ -10,29 +10,31 @@ namespace Orchard.WarmupStarter {
         /// <summary>
         /// return true to put request on hold (until call to Signal()) - return false to allow pipeline to execute immediately
         /// </summary>
-        /// <param name="context"></param>
+        /// <param name="httpApplication"></param>
         /// <returns></returns>
-        public static bool DoBeginRequest(HttpContext context) {
+        public static bool DoBeginRequest(HttpApplication httpApplication) {
             // use the url as it was requested by the client
             // the real url might be different if it has been translated (proxy, load balancing, ...)
-            var url = ToUrlString(context.Request);
-            var virtualFileCopy = WarmupUtility.EncodeUrl(url.TrimStart('/'));
-            var env = (IWebHostEnvironment)context.RequestServices.GetService(typeof(IWebHostEnvironment));
-            var localCopy = Path.Combine(env.WebRootPath, WarmupFilesPath.TrimStart('~', '/'), virtualFileCopy);
+            var url = ToUrlString(httpApplication.Request);
+            var virtualFileCopy = WarmupUtility.EncodeUrl(url.Trim('/'));
+            var localCopy = Path.Combine(HostingEnvironment.MapPath(WarmupFilesPath), virtualFileCopy);
 
             if (File.Exists(localCopy)) {
                 // result should not be cached, even on proxies
-                context.Response.Headers.Append("Cache-Control", "no-store, no-cache, must-revalidate, max-age=0");
-                context.Response.Headers.Append("Pragma", "no-cache");
-                context.Response.Headers.Append("Expires", "-1");
+                httpApplication.Response.Cache.SetExpires(DateTime.UtcNow.AddDays(-1));
+                httpApplication.Response.Cache.SetValidUntilExpires(false);
+                httpApplication.Response.Cache.SetRevalidation(HttpCacheRevalidation.AllCaches);
+                httpApplication.Response.Cache.SetCacheability(HttpCacheability.NoCache);
+                httpApplication.Response.Cache.SetNoStore();
 
-                context.Response.SendFileAsync(localCopy).Wait();
+                httpApplication.Response.WriteFile(localCopy);
+                httpApplication.Response.End();
                 return true;
             }
 
             // there is no local copy and the file exists
             // serve the static file
-            if (File.Exists(context.Request.Path.Value)) {
+            if (File.Exists(httpApplication.Request.PhysicalPath)) {
                 return true;
             }
 
@@ -40,11 +42,11 @@ namespace Orchard.WarmupStarter {
         }
 
         public static string ToUrlString(HttpRequest request) {
-            return $"{request.Scheme}://{request.Host}{request.Path}{request.QueryString}";
+            return string.Format("{0}://{1}{2}", request.Url.Scheme, request.Headers["Host"], request.RawUrl);
         }
 
         public static string EncodeUrl(string url) {
-            if (string.IsNullOrWhiteSpace(url)) {
+            if (String.IsNullOrWhiteSpace(url)) {
                 throw new ArgumentException("url can't be empty");
             }
 
@@ -54,7 +56,7 @@ namespace Orchard.WarmupStarter {
                 if ((c >= 'a' && c <= 'z') || (c >= '0' && c <= '9')) {
                     sb.Append(c);
                 }
-                // otherwise encode them in UTF8
+                    // otherwise encode them in UTF8
                 else {
                     sb.Append("_");
                     foreach (var b in Encoding.UTF8.GetBytes(new[] { c })) {
