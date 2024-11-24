@@ -1,6 +1,8 @@
 using System;
 using System.Threading;
 using System.Web;
+using Microsoft.AspNetCore.Http;
+using HttpApplication = Microsoft.AspNetCore.Http.HttpApplication;
 
 namespace Orchard.WarmupStarter {
     public class Starter<T> where T : class {
@@ -26,7 +28,7 @@ namespace Orchard.WarmupStarter {
         /// </summary>
         private volatile Exception _previousError;
 
-        public Starter(Func<HttpApplication, T> initialization, Action<HttpApplication, T> beginRequest, Action<HttpApplication, T> endRequest) {
+        public Starter(Func<Microsoft.AspNetCore.Http.HttpApplication, T> initialization, Action<Microsoft.AspNetCore.Http.HttpApplication, T> beginRequest, Action<Microsoft.AspNetCore.Http.HttpApplication, T> endRequest) {
             _initialization = initialization;
             _beginRequest = beginRequest;
             _endRequest = endRequest;
