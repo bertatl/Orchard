@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Web;
+using HttpApplication = System.Web.HttpApplication;
 
 namespace Orchard.WarmupStarter {
     public class WarmupHttpModule : IHttpModule {
