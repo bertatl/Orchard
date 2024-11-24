@@ -4,9 +4,9 @@ using System.Web;
 
 namespace Orchard.WarmupStarter {
     public class Starter<T> where T : class {
-        private readonly Func<System.Web.HttpApplication, T> _initialization;
-        private readonly Action<System.Web.HttpApplication, T> _beginRequest;
-        private readonly Action<System.Web.HttpApplication, T> _endRequest;
+        private readonly Func<HttpApplication, T> _initialization;
+        private readonly Action<HttpApplication, T> _beginRequest;
+        private readonly Action<HttpApplication, T> _endRequest;
         private readonly object _synLock = new object();
         /// <summary>
         /// The result of the initialization queued work item.
@@ -26,7 +26,7 @@ namespace Orchard.WarmupStarter {
         /// </summary>
         private volatile Exception _previousError;
 
-        public Starter(Func<System.Web.HttpApplication, T> initialization, Action<System.Web.HttpApplication, T> beginRequest, Action<System.Web.HttpApplication, T> endRequest) {
+        public Starter(Func<HttpApplication, T> initialization, Action<HttpApplication, T> beginRequest, Action<HttpApplication, T> endRequest) {
             _initialization = initialization;
             _beginRequest = beginRequest;
             _endRequest = endRequest;
