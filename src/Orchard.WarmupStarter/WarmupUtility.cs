@@ -1,9 +1,8 @@
-using System;
+﻿using System;
 using System.IO;
 using System.Text;
 using System.Web;
 using System.Web.Hosting;
-using HttpCacheability = Microsoft.AspNetCore.SystemWebAdapters.HttpCacheability;
 
 namespace Orchard.WarmupStarter {
     public static class WarmupUtility {
