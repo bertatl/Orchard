@@ -1,8 +1,9 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Text;
 using System.Web;
 using System.Web.Hosting;
+using HttpRequest = System.Web.HttpRequest;
 
 namespace Orchard.WarmupStarter {
     public static class WarmupUtility {
