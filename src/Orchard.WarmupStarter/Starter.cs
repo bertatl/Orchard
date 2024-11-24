@@ -1,7 +1,6 @@
 using System;
 using System.Threading;
 using System.Web;
-using HttpApplication = System.Web.HttpApplication;
 
 namespace Orchard.WarmupStarter {
     public class Starter<T> where T : class {
