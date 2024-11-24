@@ -1,6 +1,7 @@
 using System;
 using System.Threading;
 using System.Web;
+using HttpApplication = Microsoft.AspNetCore.Http.HttpApplication;
 
 namespace Orchard.WarmupStarter {
     public class Starter<T> where T : class {
@@ -79,7 +80,7 @@ namespace Orchard.WarmupStarter {
         /// <summary>
         /// Run the initialization delegate asynchronously in a queued work item
         /// </summary>
-        public void LaunchStartupThread(System.Web.HttpApplication application) {
+        public void LaunchStartupThread(HttpApplication application) {
             // Make sure incoming requests are queued
             WarmupHttpModule.SignalWarmupStart();
 
